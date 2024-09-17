@@ -1,0 +1,10 @@
+Update-Database -StartupProject TaskManagementAPI -Project Persistence
+
+Add-Migration InitialCreate -StartupProject TaskManagementAPI -Project Persistence
+
+
+
+(
+[-StartupProject TaskManagementAPI]  => el project donde esta el program.cs y la configuración de la BD
+[-Project Persistence] => el project donde esta el AppDBContext
+)
