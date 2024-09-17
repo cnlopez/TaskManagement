@@ -16,6 +16,6 @@ namespace Domain.Entities
 
         
         // Navigation property
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<TaskTable> Tasks { get; set; }
     }
 }
