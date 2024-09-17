@@ -1,4 +1,6 @@
+using Application.Interfaces;
 using Application.Mappers;
+using Application.Services;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
@@ -12,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddAutoMapper(typeof(ProjectMapper).Assembly);
 
 // Add services to the container.
