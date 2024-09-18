@@ -15,7 +15,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddAutoMapper(typeof(ProjectMapper).Assembly);
+builder.Services.AddAutoMapper(typeof(TaskMapper).Assembly);
 
 // Add services to the container.
 
