@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.ViewModels;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -19,19 +20,22 @@ namespace Application.Services
             _projectRepository = projectRepository;
             _mapper = mapper;
         }
-        public Task AddProjectAsync(ProjectViewModel project)
+        public async Task AddProjectAsync(ProjectViewModel projectViewModel)
         {
-            throw new NotImplementedException();
+            var project = _mapper.Map<Project>(projectViewModel);
+            await _projectRepository.AddProjectAsync(project);
         }
 
-        public Task DeleteProjectAsync(int id)
+        public async Task DeleteProjectAsync(int id)
         {
-            throw new NotImplementedException();
+            await _projectRepository.DeleteProjectAsync(id);
         }
 
-        public Task<ProjectViewModel> GetProjectViewModelByIdAsync(int id)
+        public async Task<ProjectViewModel> GetProjectViewModelByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var project = await _projectRepository.GetProjectByIdAsync(id);
+            var projectVM = _mapper.Map<ProjectViewModel>(project);
+            return projectVM;
         }
 
         public async Task<IEnumerable<ProjectViewModel>> GetProjectViewModelsAsync()
@@ -41,9 +45,10 @@ namespace Application.Services
             return projectsVM;
         }
 
-        public Task UpdateProjectAsync(ProjectViewModel project)
+        public async Task UpdateProjectAsync(int id, ProjectViewModel projectViewModel)
         {
-            throw new NotImplementedException();
+            var project = _mapper.Map<Project>(projectViewModel);
+            await _projectRepository.UpdateProjectAsync(id, project);
         }
     }
 }

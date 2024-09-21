@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -23,27 +24,30 @@ namespace TaskManagementAPI.Controllers
 
         // GET api/<ProjectController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            return "value";
+            return Ok(await _projectService.GetProjectViewModelByIdAsync(id));
         }
 
         // POST api/<ProjectController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task Post([FromBody] ProjectViewModel value)
         {
+            await _projectService.AddProjectAsync(value);
         }
 
         // PUT api/<ProjectController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task Put(int id, [FromBody] ProjectViewModel value)
         {
+            await _projectService.UpdateProjectAsync(id, value);
         }
 
         // DELETE api/<ProjectController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
+            await _projectService.DeleteProjectAsync(id);
         }
     }
 }

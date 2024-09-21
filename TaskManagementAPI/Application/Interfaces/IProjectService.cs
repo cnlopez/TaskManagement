@@ -12,7 +12,7 @@ namespace Application.Interfaces
         Task<IEnumerable<ProjectViewModel>> GetProjectViewModelsAsync();
         Task<ProjectViewModel> GetProjectViewModelByIdAsync(int id);
         Task AddProjectAsync(ProjectViewModel project);
-        Task UpdateProjectAsync(ProjectViewModel project);
+        Task UpdateProjectAsync(int id, ProjectViewModel project);
         Task DeleteProjectAsync(int id);
 
     }
