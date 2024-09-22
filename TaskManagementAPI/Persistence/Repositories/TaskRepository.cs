@@ -18,14 +18,20 @@ namespace Persistence.Repositories
             _context = context;
         }
 
-        public Task AddTaskAsync(TaskTable project)
+        public async Task AddTaskAsync(TaskTable task)
         {
-            throw new NotImplementedException();
+            await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteTaskAsync(int id)
+        public async Task DeleteTaskAsync(int id)
         {
-            throw new NotImplementedException();
+            var task = await _context.Tasks.FindAsync(id);
+            if (task != null)
+            {
+                _context.Tasks.Remove(task);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<IEnumerable<TaskTable>> GetAllTasksAsync()
@@ -33,14 +39,15 @@ namespace Persistence.Repositories
             return await _context.Tasks.ToListAsync();
         }
 
-        public Task<TaskTable> GetTaskAsync()
+        public async Task<TaskTable> GetTaskAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task UpdateTaskAsync(TaskTable project)
+        public async Task UpdateTaskAsync(TaskTable task)
         {
-            throw new NotImplementedException();
+            _context.Tasks.Update(task);
+            await _context.SaveChangesAsync();
         }
     }
 }

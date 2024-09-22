@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.ViewModels;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,19 +21,22 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public Task AddTaskAsync(TaskViewModel task)
+        public async Task AddTaskAsync(TaskViewModel taskVM)
         {
-            throw new NotImplementedException();
+            var task = _mapper.Map<TaskTable>(taskVM);
+            await _taskRepository.AddTaskAsync(task);
         }
 
-        public Task DeleteTaskAsync(int id)
+        public async Task DeleteTaskAsync(int id)
         {
-            throw new NotImplementedException();
+            await _taskRepository.DeleteTaskAsync(id);
         }
 
-        public Task<TaskViewModel> GetTaskViewModelByIdAsync(int id)
+        public async Task<TaskViewModel> GetTaskViewModelByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var task = await _taskRepository.GetTaskAsync(id);
+            var taskVM = _mapper.Map<TaskViewModel>(task);
+            return taskVM;
         }
 
         public async Task<IEnumerable<TaskViewModel>> GetTaskViewModelsAsync()
@@ -42,9 +46,10 @@ namespace Application.Services
             return tasksVM;
         }
 
-        public Task UpdateTaskAsync(TaskViewModel task)
+        public async Task UpdateTaskAsync(TaskViewModel taskVM)
         {
-            throw new NotImplementedException();
+            var task = _mapper.Map<TaskTable>(taskVM);
+            await _taskRepository.UpdateTaskAsync(task);
         }
     }
 }

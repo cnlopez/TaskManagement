@@ -10,7 +10,7 @@ namespace Domain.Interfaces
     public interface ITaskRepository
     {
         Task<IEnumerable<TaskTable>> GetAllTasksAsync();
-        Task<TaskTable> GetTaskAsync();
+        Task<TaskTable> GetTaskAsync(int id);
         Task AddTaskAsync(TaskTable project);
         Task UpdateTaskAsync(TaskTable project);
         Task DeleteTaskAsync(int id);
