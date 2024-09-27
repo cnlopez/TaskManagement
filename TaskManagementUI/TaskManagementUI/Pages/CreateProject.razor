@@ -1,0 +1,78 @@
+﻿@page "/create-project"
+@using TaskManagementUI.Models
+@inject HttpClient Http
+<h3>CreateProject</h3>
+
+
+<EditForm Model="project" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Project Name</label>
+        <InputText id="name" class="form-control" @bind-Value="project.Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="project.Description" />
+    </div>
+
+    <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <InputDate id="startDate" class="form-control" @bind-Value="project.StartDate" />
+    </div>
+
+    <div class="form-group">
+        <label for="endDate">End Date</label>
+        <InputDate id="endDate" class="form-control" @bind-Value="project.EndDate" />
+    </div>
+
+    <button type="submit">Add Project</button>
+</EditForm>
+
+@if (isSuccess)
+{
+    <div class="alert alert-success">
+        The project was successfully created.
+    </div>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">
+        Error: @errorMessage
+    </div>
+}
+
+
+@code {
+    private Project project = new Project();
+    private bool isSuccess = false;
+    private string? errorMessage = null;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/project", project);
+            if (response.IsSuccessStatusCode)
+            {
+                isSuccess = true;
+                errorMessage = null;
+                // Clear the form after success creation
+                project = new Project();
+            }
+            else
+            {
+                isSuccess = false;
+                errorMessage = "An error occurred. The project was not created.";
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            errorMessage = $"Error: {ex.Message}";
+        }
+    }
+}

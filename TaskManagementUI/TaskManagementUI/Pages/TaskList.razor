@@ -1,0 +1,50 @@
+﻿@page "/tasks"
+@using TaskManagementUI.Models
+@inject HttpClient Http
+
+<h3>Tasks</h3>
+
+@if (tasks == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Due Date</th>
+                <th>Project Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in tasks)
+            {
+                <tr>
+                    <td>@task.Id</td>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td>@task.Status</td>
+                    <td>@task.Priority</td>
+                    <td>@task.DueDate.ToString("dd/MM/yyyy")</td>
+                    <td>@task.ProjectId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private TaskTable[] tasks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Make the call to de API to get the tasks
+        tasks = await Http.GetFromJsonAsync<TaskTable[]>("api/task");
+    }
+}

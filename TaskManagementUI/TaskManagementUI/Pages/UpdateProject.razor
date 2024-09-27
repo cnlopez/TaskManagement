@@ -1,0 +1,93 @@
+﻿@page "/update-project/{id:int}"
+@using TaskManagementUI.Models
+@inject HttpClient Http
+@inject NavigationManager Navigation
+<h3>UpdateProject</h3>
+
+<EditForm Model="project" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Project Name</label>
+        <InputText id="name" class="form-control" @bind-Value="project.Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="project.Description" />
+    </div>
+
+    <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <InputDate id="startDate" class="form-control" @bind-Value="project.StartDate" />
+    </div>
+
+    <div class="form-group">
+        <label for="endDate">End Date</label>
+        <InputDate id="endDate" class="form-control" @bind-Value="project.EndDate" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Project</button>
+</EditForm>
+
+@if (isSuccess)
+{
+    <div class="alert alert-success">
+        The project was successfully updated.
+    </div>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">
+        Error: @errorMessage
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Project project = new Project();
+    private bool isSuccess = false;
+    private string? errorMessage = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Cargar los datos del proyecto a editar
+            project = await Http.GetFromJsonAsync<Project>($"api/project/{Id}");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An Error occurred while loading the project: {ex.Message}";
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var response = await Http.PutAsJsonAsync($"api/project/{Id}", project);
+            if (response.IsSuccessStatusCode)
+            {
+                isSuccess = true;
+                errorMessage = null;
+                // Navigate back to project listing or show confirmation
+                Navigation.NavigateTo("/projects");
+            }
+            else
+            {
+                isSuccess = false;
+                errorMessage = "An Error occurred. The project was not updated.";
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            errorMessage = $"Error: {ex.Message}";
+        }
+    }
+}
