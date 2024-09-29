@@ -39,6 +39,7 @@ else
             }
         </tbody>
     </table>
+    <NavLink class="btn btn-primary" href="@("create-project")">Create Project</NavLink>
     @* <ul>
         @foreach (var project in projects)
         {
@@ -50,7 +51,7 @@ else
 
 @code {
     //private Project[] projects;
-    private List<Project> projects;
+    private List<Project> projects = new List<Project>();
     private string? errorMessage = null;
 
     protected override async Task OnInitializedAsync()
@@ -63,13 +64,13 @@ else
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error al cargar proyectos: {ex.Message}";
+            errorMessage = $"An error occurred while loading projects: {ex.Message}";
         }
     }
 
     private async Task DeleteProject(int id)
     {
-        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de que deseas eliminar el proyecto con id {id}?");
+        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Are you sure you want to delete the project id {id}?");
         //bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { $"¿Estás seguro de que deseas eliminar el proyecto con id {id}?" });
 
         if (isConfirmed)
@@ -79,13 +80,13 @@ else
                 var response = await Http.DeleteAsync($"api/project/{id}");
                 if (response.IsSuccessStatusCode)
                 {
-                    // Delete prject from list in the UI
+                    // Delete project from list in the UI
                     projects = projects.Where(p => p.Id != id).ToList();
                     errorMessage = null;
                 }
                 else
                 {
-                    errorMessage = "No se pudo eliminar el proyecto.";
+                    errorMessage = "An error occurred. The project was not deleted.";
                 }
             }
             catch (Exception ex)

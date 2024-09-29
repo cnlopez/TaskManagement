@@ -1,6 +1,7 @@
 ﻿@page "/tasks"
 @using TaskManagementUI.Models
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 
 <h3>Tasks</h3>
 
@@ -20,6 +21,7 @@ else
                 <th>Priority</th>
                 <th>Due Date</th>
                 <th>Project Id</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -33,18 +35,59 @@ else
                     <td>@task.Priority</td>
                     <td>@task.DueDate.ToString("dd/MM/yyyy")</td>
                     <td>@task.ProjectId</td>
+                    <td>
+                        <NavLink class="btn btn-primary" href="@($"update-task/{task.Id}")">Edit</NavLink>
+                        <button class="btn btn-danger" @onclick="() => DeleteTask(task.Id)">Delete</button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+    <NavLink class="btn btn-primary" href="@("create-task")">Create Task</NavLink>
 }
 
 @code {
-    private TaskTable[] tasks;
+    //private TaskTable[] tasks;
+    private List<TaskTable> tasks;
+    private string? errorMessage = null;
 
     protected override async Task OnInitializedAsync()
     {
-        // Make the call to de API to get the tasks
-        tasks = await Http.GetFromJsonAsync<TaskTable[]>("api/task");
+        try
+        {
+            // Make the call to de API to get the tasks
+            tasks = await Http.GetFromJsonAsync<List<TaskTable>>("api/task");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred while loading tasks: {ex.Message}";
+        }
+    }
+
+    private async Task DeleteTask(int id)
+    {
+        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Are you sure you want to delete the task id {id}?");
+
+        if (isConfirmed)
+        {
+            try
+            {
+                var response = await Http.DeleteAsync($"api/task/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    // Delete task from list in the UI
+                    tasks = tasks.Where(p => p.Id != id).ToList();
+                    errorMessage = null;
+                }
+                else
+                {
+                    errorMessage = "An error occurred. The task was not deleted.";
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Error: {ex.Message}";
+            }
+        }
     }
 }

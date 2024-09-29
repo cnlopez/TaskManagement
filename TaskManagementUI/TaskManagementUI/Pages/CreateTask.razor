@@ -1,0 +1,122 @@
+﻿@page "/create-task"
+@using TaskManagementUI.Models
+@inject HttpClient Http
+<h3>CreateTask</h3>
+
+@code {
+    private TaskTable task = new TaskTable();
+    private List<Project> projects = new List<Project>();
+    private bool isSuccess = false;
+    private int selectedProjectId;
+    private string? errorMessage = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Get projects to show in drop down list
+            projects = await Http.GetFromJsonAsync<List<Project>>("api/project");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred while loading projects: {ex.Message}";
+        }
+    }
+
+
+    private async Task HandleValidSubmit()
+    {
+        if (selectedProjectId == 0)
+        {
+            errorMessage = "Please, select a project.";
+            return;
+        }
+
+        task.ProjectId = selectedProjectId;
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/task", task);
+            if (response.IsSuccessStatusCode)
+            {
+                isSuccess = true;
+                errorMessage = null;
+                // Clear the form after success creation
+                task = new TaskTable();
+
+                //Or 
+                //Navigation.NavigateTo("/tasks"); // Go to the tasks list after creating
+            }
+            else
+            {
+                isSuccess = false;
+                errorMessage = "An error occurred. The task was not created.";
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            errorMessage = $"Error: {ex.Message}";
+        }
+    }
+
+}
+
+<EditForm Model="task" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="task.Title" />
+        <ValidationMessage For="@(() => task.Title)" />
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="task.Description" />
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status</label>
+        <InputText id="status" class="form-control" @bind-Value="task.Status" />
+    </div>
+
+    <div class="form-group">
+        <label for="priority">Priority</label>
+        <InputNumber id="priority" class="form-control" @bind-Value="task.Priority" />
+    </div>
+
+    <div class="form-group">
+        <label for="dueDate">Due Date</label>
+        <InputDate id="dueDate" class="form-control" @bind-Value="task.DueDate" />
+    </div>
+
+    <div class="form-group">
+        <label for="project">Asignar Proyecto:</label>
+        <InputSelect class="form-control" @bind-Value="selectedProjectId">
+            <option value="">-- Selecciona un Proyecto --</option>
+            @foreach (var project in projects)
+            {
+                <option value="@project.Id">@project.Name</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => task.ProjectId)" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Add Task</button>
+</EditForm>
+
+@if (isSuccess)
+{
+    <div class="alert alert-success">
+        The task was successfully created.
+    </div>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">
+        Error: @errorMessage
+    </div>
+}
