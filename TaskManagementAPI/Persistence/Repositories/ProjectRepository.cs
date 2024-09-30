@@ -18,20 +18,23 @@ namespace Persistence.Repositories
             _context = context;
         }
 
-        public async Task AddProjectAsync(Project project)
+        public async Task<Project> AddProjectAsync(Project project)
         {
-            await _context.Projects.AddAsync(project);
+            _context.Projects.Add(project);
             await _context.SaveChangesAsync();
+            return project;
         }
 
-        public async Task DeleteProjectAsync(int id)
+        public async Task<bool> DeleteProjectAsync(int id)
         {
             var project = await _context.Projects.FindAsync(id);
-            if (project != null)
+            if (project == null)
             {
-                _context.Projects.Remove(project);
-                await _context.SaveChangesAsync();
+                return false;
             }
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync(); 
+            return true;
         }
 
         public async Task<IEnumerable<Project>> GetAllProjectsAsync()
@@ -44,10 +47,11 @@ namespace Persistence.Repositories
             return await _context.Projects.FindAsync(id);
         }
 
-        public async Task UpdateProjectAsync(int id, Project project)
+        public async Task<Project> UpdateProjectAsync(int id, Project project)
         {
             _context.Projects.Update(project);
             await _context.SaveChangesAsync();
+            return project;
         }
     }
 }

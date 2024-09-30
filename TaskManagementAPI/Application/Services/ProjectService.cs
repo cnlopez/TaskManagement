@@ -20,15 +20,17 @@ namespace Application.Services
             _projectRepository = projectRepository;
             _mapper = mapper;
         }
-        public async Task AddProjectAsync(ProjectViewModel projectViewModel)
+        public async Task<ProjectViewModel> AddProjectAsync(ProjectViewModel projectViewModel)
         {
             var project = _mapper.Map<Project>(projectViewModel);
-            await _projectRepository.AddProjectAsync(project);
+            var projectDB = await _projectRepository.AddProjectAsync(project);
+            var projectVM = _mapper.Map<ProjectViewModel>(projectDB);
+            return projectVM;
         }
 
-        public async Task DeleteProjectAsync(int id)
+        public async Task<bool> DeleteProjectAsync(int id)
         {
-            await _projectRepository.DeleteProjectAsync(id);
+            return await _projectRepository.DeleteProjectAsync(id);
         }
 
         public async Task<ProjectViewModel> GetProjectViewModelByIdAsync(int id)
@@ -45,10 +47,12 @@ namespace Application.Services
             return projectsVM;
         }
 
-        public async Task UpdateProjectAsync(int id, ProjectViewModel projectViewModel)
+        public async Task<ProjectViewModel> UpdateProjectAsync(int id, ProjectViewModel projectViewModel)
         {
             var project = _mapper.Map<Project>(projectViewModel);
-            await _projectRepository.UpdateProjectAsync(id, project);
+            var projectDB = await _projectRepository.UpdateProjectAsync(id, project);
+            var projectVM = _mapper.Map<ProjectViewModel>(projectDB);
+            return projectVM;
         }
     }
 }
