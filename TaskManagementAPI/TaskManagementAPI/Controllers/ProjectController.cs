@@ -20,18 +20,18 @@ namespace TaskManagementAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try
-            {
+            //try
+            //{
                 return Ok(await _projectService.GetProjectViewModelsAsync());
-            }
-            catch (Exception ex)
-            {
-                // Register error when having logging error system
-                // _logger.LogError($"Error occurred while getting project list: {ex.Message}");
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Register error when having logging error system
+            //    // _logger.LogError($"Error occurred while getting project list: {ex.Message}");
 
-                // Devolver una respuesta genérica de error 500
-                return StatusCode(500, new { message = "An unexpected error occurred while getting project list." });
-            }
+            //    // Devolver una respuesta genérica de error 500
+            //    return StatusCode(500, new { message = "An unexpected error occurred while getting project list." });
+            //}
         }
 
         // GET api/<ProjectController>/5
