@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,7 +8,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TaskManagementAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -17,7 +17,8 @@ namespace TaskManagementAPI.Controllers
             _projectService = projectService;
         }
         // GET: api/<ProjectController>
-        [HttpGet]
+        [Route("project"), HttpGet]
+        [Authorize]
         public async Task<IActionResult> Get()
         {
             //try
@@ -35,7 +36,7 @@ namespace TaskManagementAPI.Controllers
         }
 
         // GET api/<ProjectController>/5
-        [HttpGet("{id}")]
+        [Route("project/{id:int}"), HttpGet]
         public async Task<IActionResult> GetProject(int id)
         {
             try
@@ -53,7 +54,7 @@ namespace TaskManagementAPI.Controllers
         }
 
         // POST api/<ProjectController>
-        [HttpPost]
+        [Route("project"), HttpPost]
         public async Task<IActionResult> Post([FromBody] ProjectViewModel value)
         {
             try
@@ -72,7 +73,7 @@ namespace TaskManagementAPI.Controllers
         }
 
         // PUT api/<ProjectController>/5
-        [HttpPut("{id}")]
+        [Route("project/{id:int}"), HttpPut]
         public async Task<IActionResult> Put(int id, [FromBody] ProjectViewModel value)
         {
             try
@@ -89,7 +90,7 @@ namespace TaskManagementAPI.Controllers
         }
 
         // DELETE api/<ProjectController>/5
-        [HttpDelete("{id}")]
+        [Route("project/{id:int}"), HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             try
