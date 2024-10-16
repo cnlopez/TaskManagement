@@ -9,6 +9,7 @@ using TaskManagementAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using TaskManagementAPI.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,14 +42,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Services and repos
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IProjectService, ProjectService>();
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<ITaskService, TaskService>();
-
-//Mappers
-builder.Services.AddAutoMapper(typeof(ProjectMapper).Assembly);
-builder.Services.AddAutoMapper(typeof(TaskMapper).Assembly);
+builder.Services.RegisterBusiness(builder.Configuration);
+builder.Services.RegisterExternalServices(builder.Configuration);
 
 // Add services to the container.
 
