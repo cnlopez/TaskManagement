@@ -1,4 +1,6 @@
-﻿using Application.Services;
+﻿using Application.Interfaces;
+using Application.Mappers;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -9,14 +11,17 @@ namespace TaskManagementAPI.Tests
     public class ProjectServiceTests
     {
         private readonly Mock<IProjectRepository> _projectRepositoryMock;
-        private readonly Mock<IMapper> _mapperMock; // Mock para IMapper
-        private readonly ProjectService _projectService;
+        private readonly IMapper _mapper; // Mock para IMapper
+        private readonly IProjectService _projectService;
 
         public ProjectServiceTests()
         {
+            var profiles = new Profile[] { new ProjectMapper() };
+            var mappingConfig = new MapperConfiguration(x => x.AddProfiles(profiles));
+            _mapper = mappingConfig.CreateMapper();
+
             _projectRepositoryMock = new Mock<IProjectRepository>();
-            _mapperMock = new Mock<IMapper>(); // Inicialización del mock de IMapper
-            _projectService = new ProjectService(_projectRepositoryMock.Object, _mapperMock.Object);
+            _projectService = new ProjectService(_projectRepositoryMock.Object, _mapper);
         }
 
 

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using TaskManagementAPI.Extensions;
+using TaskManagementAPI.Endpoints;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -81,6 +82,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+//app.MapControllers();
+
+app.MapProjectEndpoints();
 
 app.Run();
