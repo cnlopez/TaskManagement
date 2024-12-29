@@ -16,7 +16,7 @@ namespace TaskManagementAPI.Controllers
         }
         // GET: api/<ProjectController>
         [Route("project"), HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Get()
         {
             try

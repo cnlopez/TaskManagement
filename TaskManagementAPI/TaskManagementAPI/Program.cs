@@ -48,7 +48,10 @@ builder.Services.RegisterExternalServices(builder.Configuration);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers();  //For Controllers
+//builder.Services.AddAuthorization();  //For minimal API
+//builder.Services.AddEndpointsApiExplorer(); //For minimal API
+//builder.Services.AddSwaggerGen(); //For minimal API
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -82,8 +85,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.MapControllers();
+app.MapControllers();  //For Controllers API
 
-app.MapProjectEndpoints();
+//app.MapProjectEndpoints();  //For minimal API
 
 app.Run();

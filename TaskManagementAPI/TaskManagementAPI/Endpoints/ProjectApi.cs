@@ -9,10 +9,10 @@ namespace TaskManagementAPI.Endpoints
     {
         public static void MapProjectEndpoints(this WebApplication app)
         {
-            var projectService = app.Services.GetRequiredService<IProjectService>();
+            //var projectService = app.Services.GetRequiredService<IProjectService>();
 
             // GET: /project
-            app.MapGet("/project", async (HttpContext httpContext) =>
+            app.MapGet("/project", async (IProjectService projectService) =>
             {
                 try
                 {
@@ -27,7 +27,7 @@ namespace TaskManagementAPI.Endpoints
 
 
             // GET: /project/{id}
-            app.MapGet("/project/{id:int}", async (int id) =>
+            app.MapGet("/project/{id:int}", async (IProjectService projectService, int id) =>
             {
                 try
                 {
@@ -44,7 +44,7 @@ namespace TaskManagementAPI.Endpoints
             });
 
             // POST: /project
-            app.MapPost("/project", async ([FromBody] ProjectViewModel value) =>
+            app.MapPost("/project", async (IProjectService projectService, [FromBody] ProjectViewModel value) =>
             {
                 try
                 {
@@ -62,7 +62,7 @@ namespace TaskManagementAPI.Endpoints
             });
 
             // PUT: /project/{id}
-            app.MapPut("/project/{id:int}", async (int id, [FromBody] ProjectViewModel value) =>
+            app.MapPut("/project/{id:int}", async (IProjectService projectService, int id, [FromBody] ProjectViewModel value) =>
             {
                 try
                 {
@@ -79,7 +79,7 @@ namespace TaskManagementAPI.Endpoints
             });
 
             // DELETE: /project/{id}
-            app.MapDelete("/project/{id:int}", async (int id) =>
+            app.MapDelete("/project/{id:int}", async (IProjectService projectService, int id) =>
             {
                 try
                 {
