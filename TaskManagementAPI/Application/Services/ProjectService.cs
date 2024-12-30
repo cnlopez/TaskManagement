@@ -42,9 +42,20 @@ namespace Application.Services
 
         public async Task<IEnumerable<ProjectViewModel>> GetProjectViewModelsAsync()
         {
-            var projects = await _projectRepository.GetAllProjectsAsync();
-            var projectsVM = _mapper.Map< IEnumerable<ProjectViewModel>>(projects);
-            return projectsVM;
+            try
+            {
+                var projects = await _projectRepository.GetAllProjectsAsync();
+                var projectsVM = _mapper.Map<IEnumerable<ProjectViewModel>>(projects);
+                return projectsVM;
+            }
+            catch (Exception ex)
+            {
+                // aqui se puede usar un sistema de logging como Serilog o NLog
+                Console.WriteLine($"Error al obtener los proyectos: {ex.Message}");
+
+                // Lanza una excepción personalizada para que el controlador la maneje
+                throw new ApplicationException("Error occurred while getting project list", ex);
+            }
         }
 
         public async Task<ProjectViewModel> UpdateProjectAsync(int id, ProjectViewModel projectViewModel)
