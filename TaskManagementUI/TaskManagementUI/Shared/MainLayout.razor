@@ -1,4 +1,4 @@
-﻿@inherits LayoutComponentBase
+﻿@* @inherits LayoutComponentBase
 
 <div class="page">
     <div class="sidebar">
@@ -14,4 +14,14 @@
             @Body
         </article>
     </main>
+</div>
+ *@
+
+ @inherits LayoutComponentBase
+
+<div class="container-fluid p-0">
+    <NavMenu />
+    <div class="content mt-5">
+        @Body
+    </div>
 </div>

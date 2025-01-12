@@ -3,16 +3,21 @@
 @inject IJSRuntime JSRuntime
 @inject HttpClient Http
 
-<h3>Projects</h3>
+<h3 class="my-4">Projects</h3>
 
-@if (projects == null)
+@if (!string.IsNullOrEmpty(errorMessage))
 {
-    <p>Loading...</p>
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+@if (projects == null || !projects.Any())
+{
+    <p>No projects found.</p>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
+    <table class="table table-hover table-bordered">
+        <thead class="table-dark">
             <tr>
                 <th>Id</th>
                 <th>Name</th>
@@ -32,35 +37,25 @@ else
                     <td>@project.StartDate.ToString("dd/MM/yyyy")</td>
                     <td>@project.EndDate.ToString("dd/MM/yyyy")</td>
                     <td>
-                        <NavLink class="btn btn-primary" href="@($"update-project/{project.Id}")">Edit</NavLink>
-                        <button class="btn btn-danger" @onclick="() => DeleteProject(project.Id)">Delete</button>
+                        <NavLink class="btn btn-sm btn-outline-primary" href="@($"update-project/{project.Id}")">Edit</NavLink>
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteProject(project.Id)">Delete</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <NavLink class="btn btn-primary" href="@("create-project")">Create Project</NavLink>
-    @* <ul>
-        @foreach (var project in projects)
-        {
-            <li>@project.Name</li>
-            <li>@project.Description</li>
-        }
-    </ul> *@
+    <NavLink class="btn btn-success mt-3" href="@("create-project")">Create Project</NavLink>
 }
 
 @code {
-    //private Project[] projects;
     private List<Project> projects = new List<Project>();
     private string? errorMessage = null;
 
     protected override async Task OnInitializedAsync()
     {
-        // Make the call to de API (Endpoint) to get the projects
-        //projects = await Http.GetFromJsonAsync<Project[]>("api/project");
         try
         {
-            projects = await Http.GetFromJsonAsync<List<Project>>("api/project");
+            projects = await Http.GetFromJsonAsync<List<Project>>("project");
         }
         catch (Exception ex)
         {
@@ -70,23 +65,21 @@ else
 
     private async Task DeleteProject(int id)
     {
-        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Are you sure you want to delete the project id {id}?");
-        //bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { $"¿Estás seguro de que deseas eliminar el proyecto con id {id}?" });
+        bool isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete project ID {id}?");
 
         if (isConfirmed)
         {
             try
             {
-                var response = await Http.DeleteAsync($"api/project/{id}");
+                var response = await Http.DeleteAsync($"project/{id}");
                 if (response.IsSuccessStatusCode)
                 {
-                    // Delete project from list in the UI
                     projects = projects.Where(p => p.Id != id).ToList();
                     errorMessage = null;
                 }
                 else
                 {
-                    errorMessage = "An error occurred. The project was not deleted.";
+                    errorMessage = "Failed to delete the project.";
                 }
             }
             catch (Exception ex)
@@ -95,5 +88,4 @@ else
             }
         }
     }
-    
 }
