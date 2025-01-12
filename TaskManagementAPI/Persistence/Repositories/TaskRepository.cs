@@ -36,7 +36,9 @@ namespace Persistence.Repositories
 
         public async Task<IEnumerable<TaskTable>> GetAllTasksAsync()
         {
-            return await _context.Tasks.ToListAsync();
+            return await _context.Tasks
+                        .Include(task => task.Project)
+                        .ToListAsync();
         }
 
         public async Task<TaskTable> GetTaskAsync(int id)

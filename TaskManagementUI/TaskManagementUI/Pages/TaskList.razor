@@ -26,6 +26,7 @@ else
                 <th>Priority</th>
                 <th>Due Date</th>
                 <th>Project Id</th>
+                <th>Project</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -40,6 +41,7 @@ else
                     <td>@task.Priority</td>
                     <td>@task.DueDate.ToString("dd/MM/yyyy")</td>
                     <td>@task.ProjectId</td>
+                    <td>@task.Project?.Name</td>
                     <td>
                         <NavLink class="btn btn-sm btn-outline-primary" href="@($"update-task/{task.Id}")">Edit</NavLink>
                         <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteTask(task.Id)">Delete</button>

@@ -16,5 +16,6 @@ namespace TaskManagementUI.Models
 
         [Required(ErrorMessage = "The project is mandatory.")]
         public int ProjectId { get; set; }
+        public Project Project { get; set; }
     }
 }
