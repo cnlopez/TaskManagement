@@ -2,7 +2,91 @@
 @using TaskManagementUI.Models
 @inject HttpClient Http
 @inject NavigationManager Navigation
-<h3>UpdateTask</h3>
+
+<h3 class="text-center my-4">Update Task</h3>
+
+<div class="container">
+    @if (isLoading)
+    {
+        <p class="text-center">Cargando...</p>
+    }
+    else if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <EditForm Model="task" OnValidSubmit="HandleValidSubmit" class="needs-validation">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger mb-3" />
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <InputText id="title" class="form-control" @bind-Value="task.Title" placeholder="Enter task title" />
+                        <ValidationMessage For="@(() => task.Title)" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <InputTextArea id="description" class="form-control" @bind-Value="task.Description" placeholder="Enter task description" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <InputText id="status" class="form-control" @bind-Value="task.Status" placeholder="Enter task status" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <InputNumber id="priority" class="form-control" @bind-Value="task.Priority" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dueDate" class="form-label">Due Date</label>
+                        <InputDate id="dueDate" class="form-control" @bind-Value="task.DueDate" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="project" class="form-label">Assign Project</label>
+                        <InputSelect id="project" class="form-control" @bind-Value="task.ProjectId">
+                            <option value="">-- Select a Project --</option>
+                            @foreach (var project in projects)
+                            {
+                                <option value="@project.Id">@project.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => task.ProjectId)" />
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary" disabled="@isSaving">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                        <button type="button" class="btn btn-secondary" @onclick="NavigateBack">
+                            <i class="bi bi-arrow-left"></i> Back to Tasks
+                        </button>
+                    </div>
+                </EditForm>
+
+                @if (isSuccess)
+                {
+                    <div class="alert alert-success mt-3">
+                        The task was successfully updated.
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger mt-3">
+                        Error: @errorMessage
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
 
 @code {
     [Parameter]
@@ -13,7 +97,6 @@
 
     private bool isLoading = true;
     private bool isSaving = false;
-
     private bool isSuccess = false;
     private string errorMessage = string.Empty;
 
@@ -21,10 +104,10 @@
     {
         try
         {
-            // Get projects to show in drop down list
-            projects = await Http.GetFromJsonAsync<List<Project>>("api/project");
+            // Load projects to show in dropdown
+            projects = await Http.GetFromJsonAsync<List<Project>>("project");
 
-            // Get the task to edit
+            // Load the task to edit
             task = await Http.GetFromJsonAsync<TaskTable>($"api/task/{Id}");
         }
         catch (Exception ex)
@@ -33,7 +116,6 @@
         }
         isLoading = false;
     }
-
 
     private async Task HandleValidSubmit()
     {
@@ -45,7 +127,9 @@
             var response = await Http.PutAsJsonAsync($"api/task/{task.Id}", task);
             if (response.IsSuccessStatusCode)
             {
-                Navigation.NavigateTo("/tasks"); // Go to the tasks list after creating
+                isSuccess = true;
+                errorMessage = string.Empty;
+                Navigation.NavigateTo("/tasks"); //go to the task list after creating 
             }
             else
             {
@@ -56,7 +140,7 @@
         catch (Exception ex)
         {
             isSuccess = false;
-            errorMessage = $"Error by saving changes: {ex.Message}";
+            errorMessage = $"Error saving changes: {ex.Message}";
         }
         finally
         {
@@ -64,76 +148,8 @@
         }
     }
 
-}
-
-@if (isLoading)
-{
-    <p>Cargando...</p>
-}
-else if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="alert alert-danger">@errorMessage</div>
-}
-else
-{
-    <EditForm Model="task" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
-        <div class="form-group">
-            <label for="title">Title</label>
-            <InputText id="title" class="form-control" @bind-Value="task.Title" />
-            <ValidationMessage For="@(() => task.Title)" />
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description</label>
-            <InputTextArea id="description" class="form-control" @bind-Value="task.Description" />
-        </div>
-
-        <div class="form-group">
-            <label for="status">Status</label>
-            <InputText id="status" class="form-control" @bind-Value="task.Status" />
-        </div>
-
-        <div class="form-group">
-            <label for="priority">Priority</label>
-            <InputNumber id="priority" class="form-control" @bind-Value="task.Priority" />
-        </div>
-
-        <div class="form-group">
-            <label for="dueDate">Due Date</label>
-            <InputDate id="dueDate" class="form-control" @bind-Value="task.DueDate" />
-        </div>
-
-        <div class="form-group">
-            <label for="project">Asignar Proyecto:</label>
-            <InputSelect class="form-control" @bind-Value="task.ProjectId">
-                <option value="">-- Selecciona un Proyecto --</option>
-                @foreach (var project in projects)
-                {
-                    <option value="@project.Id">@project.Name</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => task.ProjectId)" />
-        </div>
-
-        <button type="submit" class="btn btn-primary" disabled="@isSaving">Edit Task</button>
-    </EditForm>
-
-    @if (isSuccess)
+    private void NavigateBack()
     {
-        <div class="alert alert-success">
-            The task was successfully created.
-        </div>
-    }
-
-    @if (errorMessage != string.Empty)
-    {
-        <div class="alert alert-danger">
-            Error: @errorMessage
-        </div>
+        Navigation.NavigateTo("/tasks");
     }
 }
-
-

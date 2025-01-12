@@ -2,48 +2,62 @@
 @using TaskManagementUI.Models
 @inject HttpClient Http
 @inject NavigationManager Navigation
-<h3>UpdateProject</h3>
 
-<EditForm Model="project" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<h3 class="text-center my-4">Update Project</h3>
 
-    <div class="form-group">
-        <label for="name">Project Name</label>
-        <InputText id="name" class="form-control" @bind-Value="project.Name" />
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <EditForm Model="project" OnValidSubmit="HandleValidSubmit" class="needs-validation">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger mb-3" />
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Project Name</label>
+                    <InputText id="name" class="form-control" @bind-Value="project.Name" placeholder="Enter project name" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <InputTextArea id="description" class="form-control" @bind-Value="project.Description" placeholder="Enter project description" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <InputDate id="startDate" class="form-control" @bind-Value="project.StartDate" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <InputDate id="endDate" class="form-control" @bind-Value="project.EndDate" />
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <button type="button" class="btn btn-secondary" @onclick="NavigateBack">
+                        <i class="bi bi-arrow-left"></i> Back to Projects
+                    </button>
+                </div>
+            </EditForm>
+
+            @if (isSuccess)
+            {
+                <div class="alert alert-success mt-3">
+                    The project was successfully updated.
+                </div>
+            }
+
+            @if (errorMessage != null)
+            {
+                <div class="alert alert-danger mt-3">
+                    Error: @errorMessage
+                </div>
+            }
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="description">Description</label>
-        <InputTextArea id="description" class="form-control" @bind-Value="project.Description" />
-    </div>
-
-    <div class="form-group">
-        <label for="startDate">Start Date</label>
-        <InputDate id="startDate" class="form-control" @bind-Value="project.StartDate" />
-    </div>
-
-    <div class="form-group">
-        <label for="endDate">End Date</label>
-        <InputDate id="endDate" class="form-control" @bind-Value="project.EndDate" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update Project</button>
-</EditForm>
-
-@if (isSuccess)
-{
-    <div class="alert alert-success">
-        The project was successfully updated.
-    </div>
-}
-
-@if (errorMessage != null)
-{
-    <div class="alert alert-danger">
-        Error: @errorMessage
-    </div>
-}
+</div>
 
 @code {
     [Parameter]
@@ -57,8 +71,8 @@
     {
         try
         {
-            // Cargar los datos del proyecto a editar
-            project = await Http.GetFromJsonAsync<Project>($"api/project/{Id}");
+            // Load project data
+            project = await Http.GetFromJsonAsync<Project>($"project/{Id}");
         }
         catch (Exception ex)
         {
@@ -70,7 +84,7 @@
     {
         try
         {
-            var response = await Http.PutAsJsonAsync($"api/project/{Id}", project);
+            var response = await Http.PutAsJsonAsync($"project/{Id}", project);
             if (response.IsSuccessStatusCode)
             {
                 isSuccess = true;
@@ -89,5 +103,10 @@
             isSuccess = false;
             errorMessage = $"Error: {ex.Message}";
         }
+    }
+
+    private void NavigateBack()
+    {
+        Navigation.NavigateTo("/projects");
     }
 }

@@ -3,16 +3,21 @@
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 
-<h3>Tasks</h3>
+<h3 class="my-4">Tasks</h3>
 
-@if (tasks == null)
+@if (!string.IsNullOrEmpty(errorMessage))
 {
-    <p>Loading...</p>
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+@if (tasks == null || !tasks.Any())
+{
+    <p>No tasks found.</p>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
+    <table class="table table-hover table-bordered">
+        <thead class="table-dark">
             <tr>
                 <th>Id</th>
                 <th>Title</th>
@@ -36,14 +41,14 @@ else
                     <td>@task.DueDate.ToString("dd/MM/yyyy")</td>
                     <td>@task.ProjectId</td>
                     <td>
-                        <NavLink class="btn btn-primary" href="@($"update-task/{task.Id}")">Edit</NavLink>
-                        <button class="btn btn-danger" @onclick="() => DeleteTask(task.Id)">Delete</button>
+                        <NavLink class="btn btn-sm btn-outline-primary" href="@($"update-task/{task.Id}")">Edit</NavLink>
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteTask(task.Id)">Delete</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <NavLink class="btn btn-primary" href="@("create-task")">Create Task</NavLink>
+    <NavLink class="btn btn-success mt-3" href="@("create-task")">Create Task</NavLink>
 }
 
 @code {
