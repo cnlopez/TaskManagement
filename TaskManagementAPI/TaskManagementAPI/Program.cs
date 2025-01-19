@@ -61,7 +61,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowBlazorClient",
         policy =>
         {
-            policy.WithOrigins("https://localhost:7265") // Sets the frontend URL 
+            //policy.WithOrigins("https://localhost:7265") // Sets the frontend URL 
+            policy.WithOrigins("https://taskmanagementui-cjh2g3guggdfgte2.brazilsouth-01.azurewebsites.net") // Sets the frontend URL 
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
