@@ -13,6 +13,7 @@
 @if (tasks == null || !tasks.Any())
 {
     <p>No tasks found.</p>
+    <NavLink class="btn btn-success mt-3" href="@("create-task")">Create Task</NavLink>
 }
 else
 {
