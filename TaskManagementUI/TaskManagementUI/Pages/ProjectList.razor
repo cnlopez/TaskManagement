@@ -13,6 +13,7 @@
 @if (projects == null || !projects.Any())
 {
     <p>No projects found.</p>
+    <NavLink class="btn btn-success mt-3" href="@("create-project")">Create Project</NavLink>
 }
 else
 {

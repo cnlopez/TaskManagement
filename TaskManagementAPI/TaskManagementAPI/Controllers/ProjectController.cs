@@ -29,7 +29,7 @@ namespace TaskManagementAPI.Controllers
                 // _logger.LogError($"Error occurred while getting project list: {ex.Message}");
 
                 // Devolver una respuesta genérica de error 500
-                return StatusCode(500, new { message = "An unexpected error occurred while getting project list." });
+                return StatusCode(500, new { message = "An unexpected error occurred while getting project list.nik ex:" + ex.Message });
             }
         }
 

@@ -55,7 +55,7 @@
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("api/project", project);
+            var response = await Http.PostAsJsonAsync("project", project);
             if (response.IsSuccessStatusCode)
             {
                 isSuccess = true;

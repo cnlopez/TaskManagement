@@ -54,7 +54,7 @@ namespace Application.Services
                 Console.WriteLine($"Error al obtener los proyectos: {ex.Message}");
 
                 // Lanza una excepción personalizada para que el controlador la maneje
-                throw new ApplicationException("Error occurred while getting project list", ex);
+                throw new ApplicationException("Error occurred while getting project list" + ex.Message, ex);
             }
         }
 
