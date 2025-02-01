@@ -15,7 +15,7 @@
         try
         {
             // Get projects to show in drop down list
-            projects = await Http.GetFromJsonAsync<List<Project>>("api/project");
+            projects = await Http.GetFromJsonAsync<List<Project>>("project");
         }
         catch (Exception ex)
         {

@@ -10,5 +10,5 @@ public class TaskViewModel
     public DateTime DueDate { get; set; }
 
     public int ProjectId { get; set; }
-    public ProjectViewModel Project { get; set; }
+    public ProjectViewModel? Project { get; set; }
 }
