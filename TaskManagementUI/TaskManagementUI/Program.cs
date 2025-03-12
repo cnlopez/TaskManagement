@@ -8,10 +8,10 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
+
 // Set HttpClient to comunication with backend
 builder.Services.AddScoped(sp =>
-    //new HttpClient { BaseAddress = new Uri("https://localhost:7072/") }); // Sets the API URL
-    new HttpClient { BaseAddress = new Uri("https://taskmanagementnik-brggfkgqdygcgace.brazilsouth-01.azurewebsites.net/") }); // Sets the API URL
-
+    new HttpClient { BaseAddress = new Uri(apiBaseUrl) }); // Sets the API URL
 
 await builder.Build().RunAsync();
